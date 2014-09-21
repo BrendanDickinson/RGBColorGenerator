@@ -1,40 +1,49 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class RGBColor : MonoBehaviour {
-    [Range(0, 1)]
+public class RGBColor : MonoBehaviour 
+{
+    [Range(0.0f, 1)]
     public float r;
-    [Range(0, 1)]
+    [Range(0.0f, 1.0f)]
     public float g;
-    [Range(0, 1)]
+    [Range(0.0f, 1.0f)]
     public float b;
-    [Range(0, 1)]
+    [Range(0.0f, 1.0f)]
     public float a;
-    [Range(0, 50)]
+    [Range(0.0f, 50.0f)]
     public float blinkSpeed;
 
     public bool blink = false;
     public bool random = false;
-    bool needRandom = false;
+    private bool needRandom = false;
+	
 
-    float r2;
-    float g2;
-    float b2;
-    float count = 0;
+    private float r2;
+    private float g2;
+    private float b2;
+    private float count = 0;
+	
+	// Cache 
+	private Renderer rendererCache = null;
+	
 	// Use this for initialization
-	void Start () {
-        a = 1;
-        blinkSpeed = 100;
+	void Start() 
+	{
+        a = 1.0f;
+        blinkSpeed = 100.0f;
         newRandom();
-        gameObject.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
+		rendererCache = gameObject.renderer;
+        rendererCache.material.shader = Shader.Find("Transparent/Diffuse");
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update()
+	{
         if (blink == true && count >= 1)
         {
             random = false;
-            gameObject.GetComponent<Renderer>().material.color = new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), a);
+            rendererCache.material.color = new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), a);
             count = 0;
             needRandom = false;
         }
@@ -46,11 +55,11 @@ public class RGBColor : MonoBehaviour {
             }
             blink = false;
             needRandom = true;
-            gameObject.GetComponent<Renderer>().material.color = new Color(r2, g2, b2, a);
+            rendererCache.material.color = new Color(r2, g2, b2, a);
         }
-        else if(blink != true && random != true)
+        else if(blink == false && random == false)
         {
-            gameObject.GetComponent<Renderer>().material.color = new Color(r, g, b, a);
+            rendererCache.material.color = new Color(r, g, b, a);
             needRandom = false;
         }
         count += Time.deltaTime * blinkSpeed;
@@ -62,6 +71,5 @@ public class RGBColor : MonoBehaviour {
         g2 = Random.Range(0.0f, 1.0f);
         b2 = Random.Range(0.0f, 1.0f);
     }
-
     
 }
